@@ -1,4 +1,4 @@
-package org.test.ProcurementRouter;
+package org.group13.routingLogic;
 
 import javax.jms.ConnectionFactory;
 

@@ -1,10 +1,11 @@
-package org.test.ProcurementRouter;
+package org.group13.routingLogic;
 
 import javax.jms.ConnectionFactory;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.group13.transformerBeans.ConvertToOrderBean;
 
 /**
  * A Camel Java DSL Router
@@ -66,19 +67,30 @@ public class TransformationMapping extends RouteBuilder {
                              + exchange.getIn().getHeader("CamelFileName"));   
                  }
              });
-             // get objects from xmlOrders channel, transform to POJO, translate
+             
+             // get objects from csvlOrders channel, transform to POJO, translate
              from("jms:csvOrders").process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
                      System.out.println("Received CSV order: " 
                              + exchange.getIn().getHeader("CamelFileName"));   
                  }
-             });
-             
+             }).unmarshal().csv().
+             bean(ConvertToOrderBean.class).
+             marshal().jaxb().
+             to("jms:Convertedorder");
              //these objects are not recognized
              // put them in a badOrders queue
              from("jms:badOrders").process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
                      System.out.println("Received invalid order: " 
+                             + exchange.getIn().getHeader("CamelFileName"));   
+                 }
+             });
+             
+             // channel with POJOS
+             from("jms:Convertedorder").process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("Converted: " 
                              + exchange.getIn().getHeader("CamelFileName"));   
                  }
              });

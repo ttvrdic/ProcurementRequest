@@ -1,6 +1,10 @@
 Camel Java Router Project
 =========================
 
+Developed for Workflow Modelling Class
+
+--more info to follow--
+
 To build this project use
 
     mvn install
