@@ -5,7 +5,9 @@ import javax.jms.ConnectionFactory;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.group13.dataObjects.Invoice;
 import org.group13.dataObjects.Order;
+import org.group13.transformerBeans.ConvertToInvoiceBean;
 import org.group13.transformerBeans.ConvertToOrderBean;
 
 /**
@@ -54,12 +56,6 @@ public class TransformationMapping extends RouteBuilder {
              })
              .unmarshal().csv()
              .split(body())
-             .process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("split: " 
-                             + exchange.getIn().getBody());   
-                 }
-             })
              .choice()
              	// place in appropriate queue
              	.when(body().contains("Order"))
@@ -78,12 +74,22 @@ public class TransformationMapping extends RouteBuilder {
              // channel with RECOGNIZED CLASSES
              // now we just have to convert it to an appropriate POJO 
              
-             from("jms:csvProcessedOrders").bean(ConvertToOrderBean.class);
-             
-             from("jms:csvProcessedInvoices").process(new Processor() {
+             from("jms:csvProcessedOrders").bean(ConvertToOrderBean.class)
+             .process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
-                     System.out.println("Converted Invoice: "
-                             + exchange.getIn().getBody());   
+                	 Order order= (Order) exchange.getIn().getBody();
+                	 System.out.println("Ordered quantity "+order.getItemQuantity());
+                	 /* System.out.println("Converted O: "
+                             + exchange.getIn().getBody());  
+                             */ 
+                 }
+             });
+             
+             from("jms:csvProcessedInvoices").bean(ConvertToInvoiceBean.class)
+             .process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                	 Invoice invoice= (Invoice) exchange.getIn().getBody();
+                	 System.out.println("Invoice quantity "+invoice.getItemQuantity());
                  }
              });
              
