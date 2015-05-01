@@ -5,6 +5,7 @@ import javax.jms.ConnectionFactory;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.group13.dataObjects.Order;
 import org.group13.transformerBeans.ConvertToOrderBean;
 
 /**
@@ -29,20 +30,12 @@ public class TransformationMapping extends RouteBuilder {
                  .when(header("CamelFileName").endsWith(".csv"))
                      .to("jms:csvOrders")
              	  .otherwise()
-             	  	.to("jms:badOrders").
+             	  	.to("jms:badFiles").
              end();
              
-             //check each channel, transform to POJO and conform to our standards 
-             // First of all, check test messages and log them being ignored
-            /* from("jms:xmlOrders").filter(xpath("/order[(@test)]"))           
-             .process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Test message, will be ignored:   " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             });*/
              
              //check each channel, transform to POJO and conform to our standards 
+             
              // first, put all test messages in a testOrder queue
              from("jms:xmlOrders")
              	.choice()
@@ -50,11 +43,71 @@ public class TransformationMapping extends RouteBuilder {
                      .to("jms:xmlTestOrders")
                 .otherwise().to("jms:xmlOrders");
              
+             
+             // Take care of CSV orders now
+             // get objects from csvlOrders channel, transform to POJO, translate
+             from("jms:csvOrders").process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("Received CSV order: " 
+                             + exchange.getIn().getHeader("CamelFileName"));   
+                 }
+             })
+             .unmarshal().csv()
+             .split(body())
+             .process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("split: " 
+                             + exchange.getIn().getBody());   
+                 }
+             })
+             .choice()
+             	// place in appropriate queue
+             	.when(body().contains("Order"))
+                     .to("jms:csvProcessedOrders")  
+                 .when(body().contains("Invoice"))
+                     .to("jms:csvProcessedInvoices")
+                   // otherwise not an order or invoice
+                   // so put me in a bbad objects queue
+             	  .otherwise()
+             	  	.to("jms:badObjects")
+             .end();
+             //bean(ConvertToOrderBean.class).
+             //marshal().jaxb().
+             
+           
+             // channel with RECOGNIZED CLASSES
+             // now we just have to convert it to an appropriate POJO 
+             
+             from("jms:csvProcessedOrders").bean(ConvertToOrderBean.class);
+             
+             from("jms:csvProcessedInvoices").process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("Converted Invoice: "
+                             + exchange.getIn().getBody());   
+                 }
+             });
+             
+             //these objects are not recognized
+             from("jms:badObjects").process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("Received invalid Object: " 
+                             + exchange.getIn().getBody());   
+                 }
+             });
+             
+             // initial 
+             from("jms:badFiles").process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("Received invalid order: " 
+                             + exchange.getIn().getHeader("CamelFileName"));   
+                 }
+             });
+             
              // get objects from xmlOrders channel, transform to POJO, translate
              from("jms:xmlOrders")           
              .process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
-                     System.out.println("Will process:   " 
+                     System.out.println("Will xml process:   " 
                              + exchange.getIn().getHeader("CamelFileName"));   
                  }
              });
@@ -64,33 +117,6 @@ public class TransformationMapping extends RouteBuilder {
              .process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
                      System.out.println("Test Order Recieved!   " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             });
-             
-             // get objects from csvlOrders channel, transform to POJO, translate
-             from("jms:csvOrders").process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Received CSV order: " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             }).unmarshal().csv().
-             bean(ConvertToOrderBean.class).
-             marshal().jaxb().
-             to("jms:Convertedorder");
-             //these objects are not recognized
-             // put them in a badOrders queue
-             from("jms:badOrders").process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Received invalid order: " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             });
-             
-             // channel with POJOS
-             from("jms:Convertedorder").process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Converted: " 
                              + exchange.getIn().getHeader("CamelFileName"));   
                  }
              });

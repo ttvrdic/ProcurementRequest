@@ -27,7 +27,7 @@ public class MainApp {
          context.addRoutes(new TransformationMapping());
       // start the route and let it do its work
          context.start();
-         Thread.sleep(100000);
+         Thread.sleep(10000);
 
          // stop the CamelContext
          context.stop();

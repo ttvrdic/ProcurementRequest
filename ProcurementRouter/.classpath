@@ -45,5 +45,9 @@
 	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/springframework/spring-tx/4.1.5.RELEASE/spring-tx-4.1.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/springframework/spring-beans/4.1.5.RELEASE/spring-beans-4.1.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/apache/activemq/activemq-all/5.11.1/activemq-all-5.11.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/apache/camel/camel-bindy/2.15.0/camel-bindy-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/apache/camel/camel-csv/2.15.0/camel-csv-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/apache/camel/camel-jaxb/2.15.0/camel-jaxb-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HP-DV6/.m2/repository/org/apache/commons/commons-csv/1.1/commons-csv-1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
