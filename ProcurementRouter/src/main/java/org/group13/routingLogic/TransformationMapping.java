@@ -67,8 +67,6 @@ public class TransformationMapping extends RouteBuilder {
              	  .otherwise()
              	  	.to("jms:badObjects")
              .end();
-             //bean(ConvertToOrderBean.class).
-             //marshal().jaxb().
              
            
              // channel with RECOGNIZED CLASSES
