@@ -10,15 +10,15 @@ public class ConvertToInvoiceBean {
 	/*public String convert(Order order) {
         return order.getOrder();
     }*/
-	public Invoice convert(List<String> orderCsv) {
+	public Invoice convert(List<String> invoiceCsv) {
 		Invoice invoice= new Invoice();
 		int counter=0;
-		for(String cell : orderCsv) {
+		for(String cell : invoiceCsv) {
 			//for(String cell : row) {
 			if(counter==0)
 				invoice.setCustomer(cell);
 			if(counter==1)
-				invoice.setItemDescription(cell);
+				invoice.setItemDescription(	cell);
 			if (counter==2)
 				invoice.setItemQuantity(Integer.parseInt(cell));
 			counter++;

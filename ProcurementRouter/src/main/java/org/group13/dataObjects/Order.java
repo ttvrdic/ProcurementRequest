@@ -1,9 +1,22 @@
 package org.group13.dataObjects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "order")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Order {
 	private String orderID;
+	
+	@XmlElement(name = "customer")
 	private String customer;
+	
+	@XmlElement(name = "description")
 	private String itemDescription;
+	
+	@XmlElement(name = "quantity")
 	private int itemQuantity;
 	private String itemID;
 	private float price;

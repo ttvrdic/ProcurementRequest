@@ -46,6 +46,11 @@
       <version>2.15.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-xmlbeans</artifactId>
+  <version>2.15.1</version>
+</dependency>
   </dependencies>
 
   <build>

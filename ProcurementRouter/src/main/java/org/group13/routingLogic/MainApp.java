@@ -25,7 +25,9 @@ public class MainApp {
          context.addComponent("jms",
              JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
          context.addRoutes(new TransformationMapping());
-      // start the route and let it do its work
+         context.addRoutes(new OrderManagement());
+         context.addRoutes(new InvoiceManagement());
+         context.addRoutes(new DataLogging());
          context.start();
          Thread.sleep(10000);
 

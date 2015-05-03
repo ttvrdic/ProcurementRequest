@@ -1,12 +1,30 @@
 package org.group13.dataObjects;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "invoice")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Invoice {
 	private String invoiceID;
+	
+	@XmlElement(name = "customer")
 	private String customer;
+	
+	@XmlElement(name = "description")
 	private String itemDescription;
+	
+	@XmlElement(name = "quantity")
 	private int itemQuantity;
+	
 	private String itemID;
-	private float price;
+	private float bill;
+	
 	public String getInvoiceID(){
 		return invoiceID;
 	}
@@ -37,10 +55,10 @@ public class Invoice {
 	public void setItemID(String itemID) {
 		this.itemID = itemID;
 	}
-	public float getPrice() {
-		return price;
+	public float getBill() {
+		return bill;
 	}
-	public void setPrice(float price) {
-		this.price = price;
+	public void setBill(float price) {
+		this.bill = price;
 	}
 }

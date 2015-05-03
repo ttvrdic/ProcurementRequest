@@ -1,2 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<order name="motor" amount="1" customer="honda"/>
+<invoices>
+	<invoice>
+		<customer> Some customer </customer>
+		<description> Laptop </description>
+		<quantity> 3 </quantity>
+	</invoice>
+</invoices>
