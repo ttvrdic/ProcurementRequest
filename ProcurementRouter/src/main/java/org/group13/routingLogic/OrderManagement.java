@@ -11,23 +11,24 @@ import org.group13.transformerBeans.ConvertToOrderBean;
 
 public class OrderManagement extends RouteBuilder{
 	
+	// Represents the Order Management swimlane
+	
 	public void configure() {
         // load file orders from src/data into the JMS queue
       
-        // channel with RECOGNIZED CLASSES
-        // now we just have to convert it to an appropriate POJO 
         
-        from("jms:csvProcessedOrders").bean(ConvertToOrderBean.class)
-        .to("jms:ProcessedOrders");
+        
+        // ProcessedOrders is the POJO queue for orders
+        // send it to wireTap
         
         from("jms:ProcessedOrders")
-        .wireTap("jms:OrdersTap")
-        /*
+        //.wireTap("jms:OrdersTap")
+        
         .process(new Processor() {
             public void process(Exchange exchange) throws Exception {
            	 Order order= exchange.getIn().getBody(Order.class);
            	 System.out.println("Ordered quantity "+order.getItemQuantity());
             }
-        })*/;
+        });
 	}
 }

@@ -13,7 +13,7 @@ public class DataLogging extends RouteBuilder{
 		// used Wiretap, which created a logging copy
 		// add some custom logic for storing
 		
-		from("jms:InvoicesTap")
+		/*from("jms:InvoicesTap")
 	    .process(new Processor() {
 	            public void process(Exchange exchange) throws Exception {
 	           	 Invoice invoice = exchange.getIn().getBody(Invoice.class);
@@ -27,6 +27,6 @@ public class DataLogging extends RouteBuilder{
 	           	 Order order = exchange.getIn().getBody(Order.class);
 	           	 System.out.println("Wiretaped order quantity "+order.getItemQuantity());
 	            }
-	        });
+	        });*/
 	}
 }

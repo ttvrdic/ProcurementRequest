@@ -9,20 +9,25 @@ import org.group13.transformerBeans.ConvertToInvoiceBean;
 import org.group13.transformerBeans.ConvertToOrderBean;
 
 public class InvoiceManagement extends RouteBuilder{
+	
+	// Represents the Invoice Management swimlane
+	
 	public void configure() {
 		
-		 from("jms:csvProcessedInvoices")
-		 .bean(ConvertToInvoiceBean.class)
-		 .to("jms:ProcessedInvoices");
-         
+		// Invoice processor
+		// we extract from ProcessedInvoices queue
+		// which contains Invoice POJOs
+		
+		// we want to enrich them from local DB
+		// and then check whether invoice exists or not, and act accordingly
+		
 		 from("jms:ProcessedInvoices")
-		 .wireTap("jms:InvoicesTap")
-	     /*   .process(new Processor() {
+	        .process(new Processor() {
 	            public void process(Exchange exchange) throws Exception {
 	           	 Invoice invoice= exchange.getIn().getBody(Invoice.class);
 	           	 System.out.println("Invoiced quantity "+invoice.getItemQuantity());
 	            }
-	        })*/;
+	        });
 		 
 	}
 }

@@ -1,7 +1,0 @@
-<invoices>
-	<invoice>
-		<customer> Some customer </customer>
-		<description> Laptop </description>
-		<quantity> 3 </quantity>
-	</invoice>
-</invoices>

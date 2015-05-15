@@ -24,12 +24,13 @@ public class TransformationMapping extends RouteBuilder {
      */
     public void configure() {
              // load file orders from src/data into the JMS queue
-             from("file:src/data?noop=true&delay=5000").to("jms:incomingOrders");
+    		// TODO implement a listener for XML, not a FTP PULL
+             from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
      
              // content-based router
              // Separate XML from CSV Orders
              // and place them in separate channels
-             from("jms:incomingOrders")
+             from("jms:incomingItems")
              .choice()
                  .when(header("CamelFileName").endsWith(".xml"))
                      .to("jms:xmlItems")  
@@ -44,7 +45,7 @@ public class TransformationMapping extends RouteBuilder {
              // 	* translate to POJO
              // 	* split into line items
              // 	* identify whether order/invoice/bad/test
-                 
+             // 	* and transform him into that object
              
              //Process CSV files now
              // get objects from csvlOrders channel, transform to POJO, translate
@@ -70,6 +71,13 @@ public class TransformationMapping extends RouteBuilder {
              	  	.to("jms:badObjects")
              .end();
             
+             from("jms:csvProcessedOrders").bean(ConvertToOrderBean.class)
+             .to("jms:ProcessedOrders")
+    		 .wireTap("jms:OrdersTap");
+             
+             from("jms:csvProcessedInvoices").bean(ConvertToInvoiceBean.class)
+    		 .to("jms:ProcessedInvoices")
+    		 .wireTap("jms:InvoicesTap");
              
              // now, process XML files
              // First, we have to separate test items
